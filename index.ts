@@ -1,13 +1,31 @@
 import express, { Express, Request, Response } from 'express'
 import cors from 'cors'
-import { Pool, QueryResult } from 'pg'
+import { Pool, RowDataPacket } from 'mysql2'; // Adjusted import for MySQL
+import { QueryError, ResultSetHeader } from 'mysql2';
+require('dotenv').config();
 
 const app: Express = express()
+const mysql = require('mysql2');
 app.use(cors())
-app.use(express.json())
-app.use(express.urlencoded({extended: false}))
+/* app.use(express.json())
+app.use(express.urlencoded({extended: false})) */
 
 const port = 3001
+
+const openDb = (): Pool => {
+    const pool: Pool = mysql.createPool({
+        host: 'localhost',
+        user: 'root',
+        database: 'tododb',
+        password: 'root',
+        port: 3306, // MySQL default port
+        waitForConnections: true,
+        connectionLimit: 10,
+        queueLimit: 0,
+    });
+
+    return pool;
+};
 
 app.get('/', (req: Request, res: Response) => {
     const pool = openDb()
@@ -16,54 +34,41 @@ app.get('/', (req: Request, res: Response) => {
         if (error) {
             res.status(500).json({error: error.message})
         }
-        res.status(200).json(result.rows)
+        res.status(200).json(result)
     })
 });
 
-const openDb = (): Pool => {
-    const pool: Pool = new Pool({
-        /*user: 'postgres',
-        host: 'localhost',
-        database: 'todo',
-        password: 'Thanh92',
-        port: 5432,*/
-        user: 'root',
-        host: 'dpg-cgfkg682qv28tc03u6c0-a.oregon-postgres.render.com',
-        database: 'todo_4fph',
-        password: 'vbGntl8tl5INvv7wNxOyaW4LzVrJmKZf',
-        port: 5432,
-        ssl: true,
-    })
-    return pool;
-}
-
 app.post('/new', (req: Request, res: Response) => {
-    const pool = openDb()
+    const pool = openDb();
 
-    pool.query('insert into task (description) values ($1) returning *',
-    [req.body.description],
-    (error: Error, result: QueryResult) => {
-        if (error) {
-            res.status(500).json({error: error.message})
+    pool.query(
+        'INSERT INTO task (description) VALUES (?)',
+        [req.body.description],
+        (error, result) => {
+            if (error) {
+                res.status(500).json({ error: error.message });
+            }
+
+            const insertId: number = (result as ResultSetHeader).insertId;
+            res.status(200).json({ id: insertId });
         }
-        res.status(200).json({id: result.rows[0].id})
-})
-})
+    );
+});
 
-app.delete("/delete/:id",async(req: Request, res: Response) => {   //part 5
-    const pool = openDb()
+app.delete('/delete/:id', (req: Request, res: Response) => {
+    const pool = openDb();
 
-    const id = parseInt(req.params.id)
+    const id = parseInt(req.params.id);
 
-    pool.query('delete from task where id = $1',
-    [id],
-    (error: Error, result: QueryResult) => {
+    pool.query('DELETE FROM task WHERE id = ?', [id], (error, result) => {
         if (error) {
-            res.status(500).json({error: error.message})
+            res.status(500).json({ error: error.message });
         }
 
-        res.status(200).json({id: id})
-    })
-})
+        res.status(200).json({ id: id });
+    });
+});
 
-app.listen(port);
+app.listen(port, () => {
+    console.log(`Server is running on port ${port}`);
+});
