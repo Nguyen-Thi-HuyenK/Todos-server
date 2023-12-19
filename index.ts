@@ -7,18 +7,18 @@ require('dotenv').config();
 const app: Express = express()
 const mysql = require('mysql2');
 app.use(cors())
-/* app.use(express.json())
-app.use(express.urlencoded({extended: false})) */
+app.use(express.json())
+app.use(express.urlencoded({extended: false}))
 
 const port = 3001
 
 const openDb = (): Pool => {
     const pool: Pool = mysql.createPool({
-        host: 'localhost',
-        user: 'root',
+        host: process.env.DB_HOST,
+        user: process.env.DB_USER,
         database: 'tododb',
-        password: 'root',
-        port: 3306, // MySQL default port
+        password: process.env.DB_PASSWORD,
+        port: 3306, 
         waitForConnections: true,
         connectionLimit: 10,
         queueLimit: 0,
