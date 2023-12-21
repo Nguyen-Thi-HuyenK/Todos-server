@@ -1,3 +1,4 @@
+This is a very simple application written by Typescript, HTML, CSS (with form control and list group class from Bootstrap), and Mysql as a database.
 ### Backend part of the Todo list application
 This is the backend part of the Todo list application. The frontend part can be found via this link: [Todo list-frontend part](https://github.com/Nguyen-Thi-HuyenK/Todos).
 Together with the frontend to make a full application which allows users to add To-do tasks to the list. After entering the task, it will be saved to the database.
@@ -11,6 +12,7 @@ Link: [Backend repository](https://github.com/Nguyen-Thi-HuyenK/Todos-server), a
 ```bash
 npm run devStart
 ```
+Create .env file in the backend repository where you can store your DB_HOST, DB_USER, DB_PASSWORD.
 Link: [Frontend repository](https://github.com/Nguyen-Thi-HuyenK/Todos), and start the application by running the below command in the command line:
 ```bash
 tsc -p tsconfig.json --watch
