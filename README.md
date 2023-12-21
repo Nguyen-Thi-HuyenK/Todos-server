@@ -8,12 +8,14 @@ This application includes 2 separate repositories for frontend and backend code.
 ```bash
 npm install
 ```
-Link: [Backend repository](https://github.com/Nguyen-Thi-HuyenK/Todos-server), and start the server by running the below command in the command line:
+#### Link: [Backend repository](https://github.com/Nguyen-Thi-HuyenK/Todos-server) 
+and start the server by running the below command in the command line:
 ```bash
 npm run devStart
 ```
 Create .env file in the backend repository where you can store your DB_HOST, DB_USER, DB_PASSWORD.
-Link: [Frontend repository](https://github.com/Nguyen-Thi-HuyenK/Todos), and start the application by running the below command in the command line:
+#### Link: [Frontend repository](https://github.com/Nguyen-Thi-HuyenK/Todos)
+and start the application by running the below command in the command line:
 ```bash
 tsc -p tsconfig.json --watch
 ```
